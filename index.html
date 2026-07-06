@@ -1,858 +1,1168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bulk Watermark · Pro · Fixed Preview</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Playfair+Display:ital@0;1&family=Roboto+Mono&family=Montserrat:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;600&family=Oswald:wght@400;600&family=Raleway:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
-    body {
-      background: radial-gradient(circle at 10% 20%, #0d1225, #05080f);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-    }
-    .app-card {
-      max-width: 1480px;
-      width: 100%;
-      background: rgba(16, 22, 40, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 3.5rem;
-      padding: 2.5rem 2.8rem 3rem;
-      box-shadow: 0 30px 60px -12px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.02);
-    }
-    h1 {
-      font-size: 2.4rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #eef3ff;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 0.1rem;
-    }
-    h1 i { color: #6a89ff; }
-    .subhead {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
-      color: #8d96c0;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      padding-bottom: 1rem;
-    }
-    .subhead span {
-      background: rgba(255,255,255,0.02);
-      padding: 0.3rem 1.4rem;
-      border-radius: 60px;
-      font-size: 0.85rem;
-      border: 1px solid rgba(255,255,255,0.03);
-    }
-    .grid-2col {
-      display: grid;
-      grid-template-columns: 1.3fr 2.2fr;
-      gap: 2.8rem;
-    }
-    @media (max-width: 1000px) {
-      .grid-2col { grid-template-columns: 1fr; gap: 2rem; }
-      .app-card { padding: 1.8rem; }
-    }
-    .controls {
-      background: rgba(8, 13, 28, 0.5);
-      border-radius: 2.4rem;
-      padding: 2rem 1.8rem;
-      border: 1px solid rgba(255,255,255,0.02);
-      backdrop-filter: blur(4px);
-    }
-    .control-group { margin-bottom: 1.8rem; }
-    .control-group label {
-      display: block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #8f99cc;
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-    }
-    .control-group input[type="text"],
-    .control-group input[type="number"],
-    .control-group input[type="color"],
-    .control-group select {
-      width: 100%;
-      padding: 0.8rem 1.2rem;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 60px;
-      color: #f0f4ff;
-      font-size: 0.95rem;
-      outline: none;
-      transition: 0.2s;
-    }
-    .control-group select option { background: #1a2140; }
-    .control-group input:focus, .control-group select:focus {
-      border-color: #5d7cff;
-      box-shadow: 0 0 0 3px rgba(93,124,255,0.15);
-    }
-    .row-duo {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .row-duo .control-group { flex: 1; min-width: 100px; }
-    .color-row {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .color-row input[type="color"] {
-      width: 54px;
-      height: 54px;
-      padding: 0;
-      border-radius: 60px;
-      border: 2px solid rgba(255,255,255,0.06);
-      background: none;
-      cursor: pointer;
-    }
-    .color-row input[type="text"] { flex: 1; }
-    .file-zone {
-      background: rgba(0,0,0,0.25);
-      border-radius: 2rem;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      border: 2px dashed rgba(255,255,255,0.06);
-      transition: 0.2s;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .file-zone:hover { border-color: #5d7cff; background: rgba(93,124,255,0.04); }
-    .file-zone i { font-size: 2.6rem; color: #5d7cff; margin-bottom: 0.3rem; }
-    .file-zone p { color: #b7c0e6; font-weight: 400; }
-    .file-zone .small { font-size: 0.8rem; color: #6f78a3; margin-top: 0.4rem; }
-    .badge {
-      background: #283053;
-      padding: 0.2rem 1.2rem;
-      border-radius: 60px;
-      color: #bcc6f0;
-      font-size: 0.8rem;
-      display: inline-block;
-      margin-top: 0.8rem;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-      margin-top: 1.8rem;
-    }
-    .btn {
-      flex: 1;
-      padding: 0.9rem 1rem;
-      border: none;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      background: #262f54;
-      color: #d3dcff;
-      cursor: pointer;
-      transition: 0.15s;
-      border: 1px solid rgba(255,255,255,0.02);
-      min-width: 100px;
-    }
-    .btn-primary { background: #5d7cff; color: white; box-shadow: 0 6px 16px rgba(93,124,255,0.2); }
-    .btn-primary:hover { background: #4b6af0; transform: scale(0.97); }
-    .btn-success { background: #2eaa6e; color: white; box-shadow: 0 6px 16px rgba(46,170,110,0.15); }
-    .btn-success:hover { background: #24985f; }
-    .btn-warning { background: #b45338; color: white; }
-    .btn:disabled { opacity: 0.4; pointer-events: none; filter: grayscale(0.5); }
-    .gallery-panel {
-      background: rgba(8, 13, 28, 0.3);
-      border-radius: 2.4rem;
-      padding: 1.8rem;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.02);
-      min-height: 400px;
-    }
-    .gallery-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      color: #b3bde6;
-    }
-    .gallery-header span {
-      background: #1b2342;
-      padding: 0.2rem 1.2rem;
-      border-radius: 40px;
-      font-size: 0.8rem;
-    }
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 1.2rem;
-      max-height: 560px;
-      overflow-y: auto;
-      padding-right: 0.2rem;
-    }
-    .image-grid::-webkit-scrollbar { width: 4px; }
-    .image-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.01); border-radius: 10px; }
-    .image-grid::-webkit-scrollbar-thumb { background: #3e4a72; border-radius: 10px; }
-    .image-card {
-      background: rgba(0,0,0,0.4);
-      border-radius: 1.5rem;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.03);
-      aspect-ratio: 1/1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .image-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .image-card .index-badge {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      color: #ced8ff;
-      font-size: 0.6rem;
-      padding: 0.1rem 0.6rem;
-      border-radius: 40px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .empty-gallery {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 300px;
-      color: #5b6691;
-      gap: 0.5rem;
-    }
-    .empty-gallery i { font-size: 4rem; opacity: 0.3; }
-    .toast-message {
-      margin-top: 1.5rem;
-      padding: 0.8rem 1.5rem;
-      background: #171f3d;
-      border-radius: 60px;
-      border-left: 5px solid #5d7cff;
-      color: #c8d2ff;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.9rem;
-    }
-    .toast-message i { color: #5d7cff; }
-    
-    /* PREVIEW SECTION - FIXED */
-    .preview-section {
-      margin-top: 1.2rem;
-      border-radius: 1.8rem;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.04);
-      background: rgba(0,0,0,0.3);
-    }
-    .preview-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem 1.2rem;
-      background: rgba(0,0,0,0.3);
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-    }
-    .preview-header .preview-label {
-      font-size: 0.7rem;
-      color: #8a9ed9;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .preview-header .preview-label i { color: #5d7cff; }
-    .preview-header .preview-info {
-      font-size: 0.65rem;
-      color: #5b6691;
-    }
-    .preview-container {
-      position: relative;
-      width: 100%;
-      background: #0b0e1a;
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .preview-container canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 300px;
-      background: #0b0e1a;
-    }
-    .preview-placeholder {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #5b6691;
-      font-size: 0.9rem;
-      pointer-events: none;
-    }
-    .preview-placeholder i {
-      font-size: 2rem;
-      opacity: 0.3;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .preview-badge {
-      position: absolute;
-      bottom: 8px;
-      right: 12px;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      padding: 0.15rem 0.8rem;
-      border-radius: 40px;
-      font-size: 0.55rem;
-      color: #8a9ed9;
-      border: 1px solid rgba(255,255,255,0.03);
-      pointer-events: none;
-    }
-    .hidden { display: none; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Watermark · Pro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+/* ══════════════════════ RESET & ROOT ══════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg-primary:#0a0e1a;
+  --glass-bg:rgba(255,255,255,0.045);
+  --glass-bg-strong:rgba(255,255,255,0.07);
+  --glass-border:rgba(255,255,255,0.07);
+  --text-primary:#f0f4ff;
+  --text-secondary:#94a3b8;
+  --accent-cyan:#00f2fe;
+  --accent-blue:#4facfe;
+  --accent-purple:#8b5cf6;
+  --accent-green:#2eaa6e;
+  --accent-red:#ef4444;
+  --shadow-glow:0 8px 32px rgba(0,0,0,0.4);
+  --radius-xl:28px;
+  --radius-lg:18px;
+  --radius-md:14px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+
+html,body{
+  height:100%;
+  font-family:'Inter',sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  overflow:hidden;
+}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.02);border-radius:10px;}
+::-webkit-scrollbar-thumb{background:var(--accent-blue);border-radius:10px;box-shadow:0 0 12px rgba(79,172,254,.35);}
+
+/* ══════════════════════ AMBIENT BACKGROUND ══════════════════════ */
+.bg-fx{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
+.bg-fx::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%, rgba(26,26,62,.9), var(--bg-primary) 75%);
+}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.35;will-change:transform;}
+.orb1{width:420px;height:420px;background:radial-gradient(circle,var(--accent-blue),transparent 70%);top:-140px;left:-100px;animation:orbFloat1 22s ease-in-out infinite;}
+.orb2{width:360px;height:360px;background:radial-gradient(circle,var(--accent-purple),transparent 70%);bottom:-160px;right:-80px;animation:orbFloat2 26s ease-in-out infinite;}
+.orb3{width:260px;height:260px;background:radial-gradient(circle,var(--accent-cyan),transparent 70%);top:40%;right:10%;animation:orbFloat3 18s ease-in-out infinite;}
+@keyframes orbFloat1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,80px) scale(1.15);}}
+@keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-60px) scale(1.1);}}
+@keyframes orbFloat3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-40px,40px) scale(.9);}}
+
+/* ══════════════════════ ENTRANCE ANIMATIONS ══════════════════════ */
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes popIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+@keyframes shimmerSweep{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes rippleAnim{to{transform:scale(2.6);opacity:0;}}
+@keyframes spinSlow{to{transform:rotate(360deg);}}
+@keyframes borderPulse{0%,100%{border-color:rgba(79,172,254,.15);}50%{border-color:rgba(79,172,254,.5);}}
+
+.reveal{animation:fadeSlideUp .55s var(--ease-spring) both;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;}
+  .orb{display:none;}
+}
+
+/* ══════════════════════ SHELL / LAYOUT ══════════════════════ */
+.app{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  height:100vh;height:100dvh;
+  max-width:1180px;margin:0 auto;
+  padding:1.1rem 1.2rem;
+}
+
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.1rem 0 .9rem;flex-shrink:0;
+  animation:fadeSlideUp .5s var(--ease-spring) both;
+}
+.header-left{display:flex;align-items:center;gap:.75rem;}
+.logo-icon{
+  width:42px;height:42px;border-radius:13px;
+  background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 18px rgba(0,242,254,.3);
+  transition:transform .4s var(--ease-spring);
+}
+.header-left:hover .logo-icon{transform:rotate(-8deg) scale(1.06);}
+.logo-icon i{font-size:1.25rem;color:#0a0e1a;}
+.header-left h1{
+  font-size:1.5rem;font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(135deg,#fff,var(--accent-cyan) 60%,var(--accent-blue));
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.header-left span.tag{
+  display:block;font-size:.68rem;color:var(--text-secondary);font-weight:500;margin-top:1px;letter-spacing:.02em;
+}
+.header-right{display:flex;align-items:center;gap:.7rem;}
+.badge-count{
+  background:rgba(79,172,254,.12);padding:.32rem 1rem;border-radius:60px;
+  font-size:.72rem;font-weight:600;color:var(--accent-cyan);
+  border:1px solid rgba(79,172,254,.14);white-space:nowrap;
+  transition:box-shadow .3s var(--ease);
+}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 16px rgba(46,170,110,.55);animation:pulseDot 2s infinite;}
+
+/* ══════════════════════ RESPONSIVE GRID LAYOUT ══════════════════════ */
+.layout{
+  flex:1;min-height:0;display:flex;flex-direction:column;gap:.75rem;
+}
+
+@media (min-width:900px){
+  .layout{display:grid;grid-template-columns:340px 1fr;gap:1.3rem;align-items:stretch;}
+  .panel-controls{overflow-y:auto;padding-right:.4rem;}
+  .panel-preview{min-height:0;display:flex;flex-direction:column;}
+}
+
+.panel{display:flex;flex-direction:column;gap:.75rem;min-height:0;}
+
+/* glass card base */
+.card{
+  background:var(--glass-bg);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-glow), inset 0 1px 0 rgba(255,255,255,.04);
+  transition:border-color .3s var(--ease), transform .3s var(--ease);
+}
+
+/* ══════════════════════ PREVIEW TOGGLE ══════════════════════ */
+.preview-toggle-wrap{display:flex;align-items:center;gap:.8rem;flex-shrink:0;}
+.preview-toggle-btn{
+  display:flex;align-items:center;justify-content:center;gap:.6rem;
+  padding:.68rem 1.2rem;background:rgba(79,172,254,.08);
+  border:1px solid rgba(79,172,254,.14);border-radius:60px;
+  color:var(--text-primary);font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:all .25s var(--ease);min-height:48px;flex:1;
+  position:relative;overflow:hidden;
+}
+.preview-toggle-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
+  background-size:200% 100%;background-position:-200% 0;
+}
+.preview-toggle-btn:hover::before{animation:shimmerSweep 1.2s ease;}
+.preview-toggle-btn:hover{background:rgba(79,172,254,.16);border-color:rgba(79,172,254,.3);}
+.preview-toggle-btn:active{transform:scale(.96);}
+.preview-toggle-btn i{font-size:.9rem;transition:transform .4s var(--ease-spring);color:var(--accent-cyan);}
+.preview-toggle-btn.active i{transform:rotate(180deg);}
+.preview-status-badge{
+  font-size:.7rem;color:var(--text-secondary);background:rgba(255,255,255,.04);
+  padding:.22rem .8rem;border-radius:60px;white-space:nowrap;border:1px solid rgba(255,255,255,.05);
+  transition:color .3s ease;
+}
+
+/* ══════════════════════ PREVIEW PANEL ══════════════════════ */
+.preview-panel{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .55s var(--ease), opacity .4s ease, margin .3s ease;
+  margin:0;border-radius:var(--radius-lg);
+  background:rgba(0,0,0,.32);border:1px solid transparent;flex-shrink:0;
+}
+.preview-panel.open{max-height:420px;opacity:1;margin:.15rem 0 .2rem;border-color:rgba(79,172,254,.1);}
+@media (min-width:900px){.preview-panel.open{max-height:460px;flex:1;}}
+.preview-inner{
+  position:relative;width:100%;height:100%;background:#0b0e1a;
+  border-radius:var(--radius-lg);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;min-height:220px;
+}
+.preview-panel canvas{display:block;width:100%;height:auto;max-height:400px;background:#0b0e1a;}
+@media (min-width:900px){.preview-panel canvas{max-height:none;height:100%;object-fit:contain;}}
+.preview-badge{
+  position:absolute;bottom:12px;right:14px;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(8px);padding:.18rem .9rem;border-radius:60px;
+  font-size:.62rem;font-weight:500;color:var(--text-secondary);
+  border:1px solid rgba(255,255,255,.05);pointer-events:none;letter-spacing:.04em;
+}
+.preview-placeholder{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;color:var(--text-secondary);font-size:.85rem;pointer-events:none;opacity:.55;
+}
+.preview-placeholder i{font-size:2.4rem;display:block;margin-bottom:.4rem;opacity:.4;}
+
+/* ══════════════════════ CONTROLS ══════════════════════ */
+.controls-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:.15rem;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+.controls-card{padding:1rem 1rem 1.1rem;}
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem .9rem;}
+.controls-grid .full{grid-column:1/-1;}
+
+.ctrl-group{display:flex;flex-direction:column;gap:.28rem;animation:fadeSlideUp .5s var(--ease-spring) both;}
+.ctrl-group:nth-child(1){animation-delay:.02s;}
+.ctrl-group:nth-child(2){animation-delay:.06s;}
+.ctrl-group:nth-child(3){animation-delay:.1s;}
+.ctrl-group:nth-child(4){animation-delay:.14s;}
+.ctrl-group:nth-child(5){animation-delay:.18s;}
+.ctrl-group:nth-child(6){animation-delay:.22s;}
+.ctrl-group:nth-child(7){animation-delay:.26s;}
+.ctrl-group:nth-child(8){animation-delay:.3s;}
+
+.ctrl-group label{
+  font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--text-secondary);font-weight:600;display:flex;align-items:center;gap:.4rem;
+}
+.ctrl-group label i{font-size:.62rem;color:var(--accent-cyan);opacity:.75;}
+
+.ctrl-group input[type="text"],
+.ctrl-group input[type="number"],
+.ctrl-group select{
+  width:100%;padding:.72rem 1rem;background:rgba(0,0,0,.38);
+  border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-md);
+  color:var(--text-primary);font-size:.9rem;font-weight:500;outline:none;
+  transition:all .25s var(--ease);min-height:48px;-webkit-appearance:none;appearance:none;
+  font-family:'Inter',sans-serif;
+}
+.ctrl-group select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.8rem;cursor:pointer;
+}
+.ctrl-group select option{background:#1a2140;color:#f0f4ff;}
+.ctrl-group input:focus,.ctrl-group select:focus{
+  border-color:var(--accent-blue);box-shadow:0 0 0 4px rgba(79,172,254,.12);background:rgba(0,0,0,.52);
+}
+.ctrl-group input:hover,.ctrl-group select:hover{border-color:rgba(255,255,255,.14);}
+
+/* range slider (advanced) for opacity */
+.range-row{display:flex;align-items:center;gap:.6rem;}
+input[type="range"]{
+  -webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent-cyan),var(--accent-blue));cursor:pointer;outline:none;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#fff;border:3px solid var(--accent-blue);
+  box-shadow:0 2px 10px rgba(79,172,254,.5);transition:transform .2s var(--ease-spring);
+}
+input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15);}
+.range-value{
+  font-size:.75rem;font-weight:700;color:var(--accent-cyan);min-width:38px;text-align:right;
+}
+
+.color-row{display:flex;align-items:center;gap:.6rem;}
+.color-row input[type="color"]{
+  width:48px;height:48px;padding:0;border-radius:60px;border:2px solid rgba(255,255,255,.08);
+  background:none;cursor:pointer;flex-shrink:0;transition:.25s var(--ease);
+}
+.color-row input[type="color"]:hover{border-color:var(--accent-cyan);transform:scale(1.06);box-shadow:0 0 14px rgba(0,242,254,.35);}
+.color-row input[type="text"]{flex:1;min-height:48px;}
+
+.style-btns{display:flex;gap:.4rem;}
+.btn-style{
+  flex:1;padding:.5rem .2rem;border:1px solid transparent;border-radius:60px;
+  background:rgba(255,255,255,.045);color:var(--text-secondary);font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .22s var(--ease);min-height:42px;font-family:'Inter',sans-serif;
+}
+.btn-style.active{
+  background:rgba(79,172,254,.14);color:#fff;border-color:rgba(79,172,254,.28);
+  box-shadow:0 0 20px rgba(79,172,254,.12);
+}
+.btn-style:active{transform:scale(.94);}
+
+/* position pad — advanced UI touch */
+.pos-pad-wrap{display:flex;gap:.8rem;align-items:center;}
+.pos-pad{
+  position:relative;width:74px;height:74px;flex-shrink:0;border-radius:14px;
+  background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);cursor:crosshair;overflow:hidden;
+}
+.pos-pad::before,.pos-pad::after{content:'';position:absolute;background:rgba(255,255,255,.06);}
+.pos-pad::before{left:50%;top:0;bottom:0;width:1px;}
+.pos-pad::after{top:50%;left:0;right:0;height:1px;}
+.pos-dot{
+  position:absolute;width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle,#fff,var(--accent-cyan));
+  box-shadow:0 0 10px rgba(0,242,254,.7);transform:translate(-50%,-50%);
+  transition:box-shadow .2s ease;pointer-events:none;
+}
+.pos-fields{display:flex;flex-direction:column;gap:.4rem;flex:1;}
+.pos-fields .mini-row{display:flex;align-items:center;gap:.4rem;}
+.pos-fields label{font-size:.62rem;color:var(--text-secondary);width:16px;font-weight:700;}
+.pos-fields input{min-height:36px !important;padding:.4rem .6rem !important;font-size:.8rem !important;}
+
+/* ══════════════════════ FILE UPLOAD ══════════════════════ */
+.file-zone{
+  background:rgba(0,0,0,.22);border-radius:var(--radius-lg);padding:1.3rem 1rem;
+  text-align:center;border:2px dashed rgba(255,255,255,.08);
+  transition:all .3s var(--ease);cursor:pointer;position:relative;overflow:hidden;
+}
+.file-zone::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:radial-gradient(circle at 50% 0%,rgba(79,172,254,.18),transparent 70%);
+  transition:opacity .3s ease;
+}
+.file-zone:hover{border-color:var(--accent-blue);background:rgba(79,172,254,.05);}
+.file-zone:hover::before{opacity:1;}
+.file-zone:active{transform:scale(.98);}
+.file-zone.drag-over{border-color:var(--accent-cyan);background:rgba(0,242,254,.08);animation:borderPulse 1s infinite;}
+.file-zone i{
+  font-size:1.9rem;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.9;
+  display:inline-block;transition:transform .3s var(--ease-spring);
+}
+.file-zone:hover i{transform:translateY(-3px) scale(1.05);}
+.file-zone p{font-size:.86rem;color:var(--text-primary);font-weight:500;margin-top:.3rem;}
+.file-zone .small{font-size:.66rem;color:var(--text-secondary);}
+.file-zone .badge{
+  background:rgba(255,255,255,.045);padding:.16rem 1rem;border-radius:60px;color:var(--text-secondary);
+  font-size:.7rem;display:inline-block;margin-top:.4rem;border:1px solid rgba(255,255,255,.05);
+}
+.file-zone input{display:none;}
+
+/* ══════════════════════ GALLERY ══════════════════════ */
+.gallery-wrap{flex:1;min-height:120px;display:flex;flex-direction:column;}
+.gallery-header{display:flex;justify-content:space-between;align-items:center;padding:.1rem .1rem .35rem;flex-shrink:0;}
+.gallery-header span{font-size:.72rem;font-weight:600;color:var(--text-secondary);letter-spacing:.04em;}
+.gallery-header .count{
+  background:rgba(255,255,255,.045);padding:.06rem .8rem;border-radius:60px;font-size:.66rem;
+  color:var(--text-secondary);border:1px solid rgba(255,255,255,.05);
+}
+.gallery-grid{
+  flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));
+  gap:.55rem;overflow-y:auto;padding:.15rem .15rem .3rem;-webkit-overflow-scrolling:touch;
+}
+.gallery-grid .empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;grid-column:1/-1;
+  color:var(--text-secondary);padding:1.4rem 0;gap:.35rem;opacity:.55;
+}
+.gallery-grid .empty i{font-size:2.6rem;animation:fadeIn 1s ease;}
+.gallery-grid .empty p{font-size:.78rem;}
+.thumb{
+  background:rgba(0,0,0,.35);border-radius:var(--radius-md);overflow:hidden;aspect-ratio:1/1;
+  border:1px solid rgba(255,255,255,.04);position:relative;cursor:pointer;
+  transition:transform .25s var(--ease-spring), border-color .25s ease, box-shadow .25s ease;
+  animation:popIn .4s var(--ease-spring) both;
+}
+.thumb:hover{border-color:rgba(79,172,254,.35);transform:scale(1.05) translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+.thumb:hover img{transform:scale(1.08);}
+.thumb .idx{
+  position:absolute;top:4px;right:6px;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);
+  font-size:.52rem;font-weight:600;padding:.06rem .5rem;border-radius:60px;color:var(--text-secondary);
+  border:1px solid rgba(255,255,255,.05);
+}
+.thumb .remove-btn{
+  position:absolute;top:4px;left:6px;width:18px;height:18px;border-radius:50%;
+  background:rgba(239,68,68,.85);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;opacity:0;transition:opacity .2s ease,transform .2s ease;border:none;cursor:pointer;
+}
+.thumb:hover .remove-btn{opacity:1;}
+.thumb .remove-btn:hover{transform:scale(1.15);background:var(--accent-red);}
+
+/* lightbox */
+.lightbox{
+  position:fixed;inset:0;background:rgba(5,7,14,.86);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;z-index:50;opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.lightbox.open{opacity:1;pointer-events:auto;}
+.lightbox img{
+  max-width:88vw;max-height:82vh;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);
+  animation:popIn .35s var(--ease-spring);
+}
+.lightbox .close-lb{
+  position:absolute;top:22px;right:26px;width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;
+  transition:all .2s ease;
+}
+.lightbox .close-lb:hover{background:rgba(239,68,68,.25);transform:rotate(90deg);}
+
+/* ══════════════════════ PROGRESS BAR ══════════════════════ */
+.progress-wrap{
+  height:0;overflow:hidden;transition:height .3s var(--ease), margin .3s ease;flex-shrink:0;
+}
+.progress-wrap.show{height:22px;margin-top:.1rem;}
+.progress-track{
+  position:relative;width:100%;height:8px;border-radius:10px;background:rgba(255,255,255,.06);overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:0%;border-radius:10px;
+  background:linear-gradient(90deg,var(--accent-cyan),var(--accent-blue),var(--accent-purple));
+  background-size:200% 100%;animation:shimmerSweep 1.6s linear infinite;
+  transition:width .3s var(--ease);
+}
+.progress-label{font-size:.62rem;color:var(--text-secondary);margin-top:.28rem;text-align:right;}
+
+/* ══════════════════════ ACTION BUTTONS ══════════════════════ */
+.actions{display:flex;gap:.5rem;padding:.35rem 0 0;flex-shrink:0;}
+.btn{
+  flex:1;padding:.62rem .3rem;border:none;border-radius:60px;font-weight:600;font-size:.82rem;
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;
+  transition:all .25s var(--ease);min-height:50px;min-width:0;font-family:'Inter',sans-serif;
+  position:relative;overflow:hidden;
+}
+.btn:active{transform:scale(.95);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));color:#0a0e1a;
+  box-shadow:0 4px 20px rgba(79,172,254,.28);
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);
+  background-size:220% 100%;background-position:-220% 0;
+}
+.btn-primary:hover::before{animation:shimmerSweep 1s ease;}
+.btn-primary:hover{box-shadow:0 6px 28px rgba(79,172,254,.4);transform:translateY(-1px);}
+.btn-success{background:rgba(46,170,110,.16);color:#4ade80;border:1px solid rgba(46,170,110,.12);}
+.btn-success:hover{background:rgba(46,170,110,.24);}
+.btn-warning{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.09);}
+.btn-warning:hover{background:rgba(239,68,68,.17);}
+.btn:disabled{opacity:.4;pointer-events:none;filter:grayscale(.5);}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);pointer-events:none;animation:rippleAnim .55s ease-out forwards;}
+
+/* ══════════════════════ TOAST ══════════════════════ */
+.toast{
+  padding:.42rem 1rem;background:rgba(255,255,255,.045);border-radius:60px;
+  border-left:4px solid var(--accent-cyan);color:var(--text-secondary);
+  display:flex;align-items:center;gap:.6rem;font-size:.76rem;flex-shrink:0;min-height:42px;
+  margin-top:.3rem;border:1px solid rgba(255,255,255,.03);backdrop-filter:blur(4px);
+  transition:all .3s var(--ease);animation:fadeSlideUp .4s var(--ease-spring);
+}
+.toast i{color:var(--accent-cyan);font-size:.72rem;}
+.toast.error{border-left-color:var(--accent-red);background:rgba(239,68,68,.06);}
+.toast.error i{color:var(--accent-red);}
+.toast.bump{animation:toastBump .35s var(--ease-spring);}
+@keyframes toastBump{0%{transform:scale(1);}30%{transform:scale(1.02);}100%{transform:scale(1);}}
+
+/* ══════════════════════ RESPONSIVE FINE-TUNE ══════════════════════ */
+@media (max-width:899px){
+  html,body{overflow:hidden;}
+  .app{padding:.9rem .9rem .7rem;}
+}
+
+@media (max-width:480px){
+  .header-left h1{font-size:1.2rem;}
+  .logo-icon{width:36px;height:36px;}
+  .logo-icon i{font-size:1.05rem;}
+  .controls-grid{gap:.55rem .6rem;}
+  .ctrl-group input[type="text"],.ctrl-group input[type="number"],.ctrl-group select{font-size:.82rem;padding:.55rem .8rem;min-height:44px;}
+  .color-row input[type="color"]{width:44px;height:44px;}
+  .btn-style{font-size:.64rem;min-height:36px;}
+  .file-zone{padding:.9rem .6rem;}
+  .file-zone i{font-size:1.5rem;}
+  .file-zone p{font-size:.78rem;}
+  .actions .btn{font-size:.72rem;min-height:44px;}
+  .gallery-grid{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:.42rem;}
+  .preview-panel.open{max-height:260px;}
+  .preview-panel canvas{max-height:210px;}
+  .pos-pad{width:62px;height:62px;}
+}
+
+@media (max-height:680px) and (max-width:899px){
+  .app{padding:.5rem .8rem .4rem;}
+  .header{padding-bottom:.4rem;}
+  .header-left h1{font-size:1.05rem;}
+  .logo-icon{width:30px;height:30px;}
+  .controls-card{padding:.7rem .8rem .8rem;}
+  .preview-panel.open{max-height:190px;}
+  .preview-panel canvas{max-height:160px;}
+  .gallery-grid{grid-template-columns:repeat(auto-fill,minmax(50px,1fr));}
+}
+
+.hidden{display:none !important;}
+</style>
 </head>
 <body>
 
-<div class="app-card">
-  <h1><i class="fas fa-water"></i> Bulk Watermark · Pro</h1>
-  <div class="subhead">
-    <span><i class="fas fa-images"></i> up to 50 · lossless · original size</span>
-    <span><i class="fas fa-eye"></i> live preview · fixed</span>
-  </div>
+<div class="bg-fx" aria-hidden="true">
+  <span class="orb orb1"></span>
+  <span class="orb orb2"></span>
+  <span class="orb orb3"></span>
+</div>
 
-  <div class="grid-2col">
-    <div class="controls">
-      <div class="control-group">
-        <label><i class="fas fa-font"></i> Watermark text</label>
-        <input type="text" id="watermarkText" value="© Slay In Green" placeholder="e.g. © MyBrand">
+<div class="app" role="main">
+
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-icon"><i class="fas fa-water"></i></div>
+      <div>
+        <h1>Watermark</h1>
+        <span class="tag">Bulk · Pro</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge-count" id="fileCountBadge">0 / 50</span>
+      <span class="status-dot" id="statusDot"></span>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ═══ LEFT / CONTROLS ═══ -->
+    <aside class="panel panel-controls">
+
+      <div class="card reveal" style="padding:.9rem;">
+        <div class="file-zone" id="fileDropZone">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p><strong>Tap</strong> or drag images here</p>
+          <span class="small">JPEG, PNG, WebP · up to 50</span>
+          <div class="badge" id="fileCountBadge2">0 / 50</div>
+          <input type="file" id="fileInput" multiple accept="image/*" />
+        </div>
       </div>
 
-      <div class="row-duo">
-        <div class="control-group">
-          <label><i class="fas fa-italic"></i> Font</label>
-          <select id="fontFamilySelect">
-            <option value="Inter, sans-serif">Inter</option>
-            <option value="'Playfair Display', serif">Playfair Display</option>
-            <option value="'Roboto Mono', monospace">Roboto Mono</option>
-            <option value="'Montserrat', sans-serif">Montserrat</option>
-            <option value="'DM Serif Display', serif">DM Serif</option>
-            <option value="'Space Grotesk', sans-serif">Space Grotesk</option>
-            <option value="'Oswald', sans-serif">Oswald</option>
-            <option value="'Raleway', sans-serif">Raleway</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label><i class="fas fa-palette"></i> Color</label>
-          <div class="color-row">
-            <input type="color" id="textColor" value="#ffffff">
-            <input type="text" id="textColorHex" value="#ffffff">
+      <div class="card controls-card controls-scroll reveal" id="controlsScroll">
+        <div class="controls-grid">
+
+          <div class="ctrl-group full">
+            <label><i class="fas fa-font"></i> Watermark Text</label>
+            <input type="text" id="watermarkText" value="© Slay In Green" placeholder="Your text" />
           </div>
+
+          <div class="ctrl-group">
+            <label><i class="fas fa-italic"></i> Font</label>
+            <select id="fontFamilySelect">
+              <option value="Inter, sans-serif">Inter</option>
+              <option value="'Playfair Display', serif" selected>Playfair Display</option>
+              <option value="'Roboto Mono', monospace">Roboto Mono</option>
+              <option value="'Montserrat', sans-serif">Montserrat</option>
+              <option value="'DM Serif Display', serif">DM Serif</option>
+              <option value="'Space Grotesk', sans-serif">Space Grotesk</option>
+              <option value="'Oswald', sans-serif">Oswald</option>
+              <option value="'Raleway', sans-serif">Raleway</option>
+            </select>
+          </div>
+
+          <div class="ctrl-group">
+            <label><i class="fas fa-palette"></i> Color</label>
+            <div class="color-row">
+              <input type="color" id="textColor" value="#ffffff" />
+              <input type="text" id="textColorHex" value="#ffffff" />
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <label><i class="fas fa-text-height"></i> Size (px)</label>
+            <input type="number" id="fontSize" value="45" min="8" max="300" />
+          </div>
+
+          <div class="ctrl-group">
+            <label><i class="fas fa-circle"></i> Opacity</label>
+            <div class="range-row">
+              <input type="range" id="opacitySlider" value="0.45" min="0.05" max="1.0" step="0.05" />
+              <span class="range-value" id="opacityValue">45%</span>
+            </div>
+          </div>
+
+          <div class="ctrl-group full">
+            <label><i class="fas fa-arrows-alt"></i> Position</label>
+            <div class="pos-pad-wrap">
+              <div class="pos-pad" id="posPad"><div class="pos-dot" id="posDot"></div></div>
+              <div class="pos-fields">
+                <div class="mini-row">
+                  <label>X</label>
+                  <input type="number" id="posX" value="50" min="0" max="100" step="1" />
+                </div>
+                <div class="mini-row">
+                  <label>Y</label>
+                  <input type="number" id="posY" value="50" min="0" max="100" step="1" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ctrl-group full">
+            <label><i class="fas fa-bold"></i> Style</label>
+            <div class="style-btns">
+              <button class="btn-style active" id="styleNormal">Normal</button>
+              <button class="btn-style" id="styleBold">Bold</button>
+              <button class="btn-style" id="styleItalic">Italic</button>
+            </div>
+            <input type="hidden" id="fontStyleValue" value="normal" />
+          </div>
+
         </div>
       </div>
 
-      <div class="row-duo">
-        <div class="control-group">
-          <label><i class="fas fa-text-height"></i> Size (px)</label>
-          <input type="number" id="fontSize" value="45" min="10" max="300">
-        </div>
-        <div class="control-group">
-          <label><i class="fas fa-circle"></i> Opacity</label>
-          <input type="number" id="opacitySlider" value="0.45" min="0.05" max="1.0" step="0.05">
-        </div>
+    </aside>
+
+    <!-- ═══ RIGHT / PREVIEW + GALLERY ═══ -->
+    <main class="panel panel-preview">
+
+      <div class="preview-toggle-wrap reveal">
+        <button class="preview-toggle-btn" id="previewToggleBtn">
+          <span>Show Preview</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <span class="preview-status-badge" id="previewStatus">tap to see</span>
       </div>
 
-      <div class="row-duo">
-        <div class="control-group">
-          <label><i class="fas fa-arrow-left"></i> X %</label>
-          <input type="number" id="posX" value="50" min="0" max="100" step="1">
-        </div>
-        <div class="control-group">
-          <label><i class="fas fa-arrow-up"></i> Y %</label>
-          <input type="number" id="posY" value="50" min="0" max="100" step="1">
-        </div>
-      </div>
-
-      <div class="control-group">
-        <label><i class="fas fa-italic"></i> Style</label>
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-          <button class="btn" id="styleNormal" style="flex:1; background:#20294a; padding:0.5rem;">Normal</button>
-          <button class="btn" id="styleBold" style="flex:1; background:#20294a; padding:0.5rem;">Bold</button>
-          <button class="btn" id="styleItalic" style="flex:1; background:#20294a; padding:0.5rem;">Italic</button>
-        </div>
-        <input type="hidden" id="fontStyleValue" value="normal">
-      </div>
-
-      <div class="file-zone" id="fileDropZone">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p><strong>Drop images</strong> or click to browse</p>
-        <p class="small">JPEG, PNG, WebP · max 50</p>
-        <div class="badge" id="fileCountBadge">0 / 50</div>
-        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
-      </div>
-
-      <!-- FIXED PREVIEW -->
-      <div class="preview-section">
-        <div class="preview-header">
-          <span class="preview-label"><i class="fas fa-eye"></i> LIVE PREVIEW</span>
-          <span class="preview-info" id="previewStatus">real-time</span>
-        </div>
-        <div class="preview-container">
+      <div class="preview-panel" id="previewPanel">
+        <div class="preview-inner">
           <canvas id="previewCanvas" width="800" height="450"></canvas>
           <div class="preview-placeholder" id="previewPlaceholder">
             <i class="fas fa-edit"></i>
-            <span>Adjust settings to preview</span>
+            <span>Adjust settings &amp; preview</span>
           </div>
           <div class="preview-badge" id="previewBadge">demo</div>
         </div>
       </div>
 
-      <div class="action-buttons">
-        <button class="btn btn-primary" id="applyWatermarkBtn"><i class="fas fa-stamp"></i> Watermark</button>
-        <button class="btn btn-success" id="downloadAllBtn"><i class="fas fa-download"></i> Download</button>
-        <button class="btn btn-warning" id="clearBtn"><i class="fas fa-trash-alt"></i> Clear</button>
-      </div>
-
-      <div id="toastContainer" class="toast-message">
-        <i class="fas fa-info-circle"></i> <span id="toastText">Ready · upload images</span>
-      </div>
-    </div>
-
-    <div class="gallery-panel">
-      <div class="gallery-header">
-        <span><i class="fas fa-layer-group"></i> Gallery</span>
-        <span id="galleryCount">0</span>
-      </div>
-      <div class="image-grid" id="imageGrid">
-        <div class="empty-gallery" id="emptyGallery">
-          <i class="fas fa-image"></i>
-          <p>No images loaded</p>
-          <span style="font-size:0.8rem; color:#434e78;">Upload up to 50 images</span>
+      <div class="card gallery-wrap reveal" style="padding:.8rem .9rem;">
+        <div class="gallery-header">
+          <span><i class="fas fa-layer-group"></i> Gallery</span>
+          <span class="count" id="galleryCount">0</span>
+        </div>
+        <div class="gallery-grid" id="imageGrid">
+          <div class="empty" id="emptyGallery">
+            <i class="fas fa-image"></i>
+            <p>No images uploaded yet</p>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel">0 / 0</div>
+      </div>
+
+      <div class="actions reveal">
+        <button class="btn btn-primary" id="applyWatermarkBtn">
+          <i class="fas fa-stamp"></i> <span>Watermark</span>
+        </button>
+        <button class="btn btn-success" id="downloadAllBtn">
+          <i class="fas fa-download"></i> <span>Download</span>
+        </button>
+        <button class="btn btn-warning" id="clearBtn">
+          <i class="fas fa-trash-alt"></i> <span>Clear</span>
+        </button>
+      </div>
+
+      <div class="toast" id="toastContainer">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastText">Ready · upload images to start</span>
+      </div>
+
+    </main>
   </div>
 </div>
 
+<div class="lightbox" id="lightbox">
+  <button class="close-lb" id="closeLightbox"><i class="fas fa-times"></i></button>
+  <img id="lightboxImg" src="" alt="preview" />
+</div>
+
 <script>
-  (function() {
-    // ---------- state ----------
-    let originalFiles = [];
-    let processedBlobs = [];
-    let processedURLs = [];
-    const MAX_IMAGES = 50;
-    let previewImageData = null;
+(function(){
+  'use strict';
 
-    // DOM refs
-    const fileInput = document.getElementById('fileInput');
-    const fileDropZone = document.getElementById('fileDropZone');
-    const fileCountBadge = document.getElementById('fileCountBadge');
-    const imageGrid = document.getElementById('imageGrid');
-    const emptyGallery = document.getElementById('emptyGallery');
-    const galleryCount = document.getElementById('galleryCount');
-    const toastText = document.getElementById('toastText');
+  // ── STATE ──
+  let originalFiles = [];
+  let processedBlobs = [];
+  let processedURLs = [];
+  const MAX_IMAGES = 50;
+  let previewImageData = null;
+  let previewVisible = false;
 
-    const watermarkText = document.getElementById('watermarkText');
-    const textColor = document.getElementById('textColor');
-    const textColorHex = document.getElementById('textColorHex');
-    const fontSize = document.getElementById('fontSize');
-    const opacitySlider = document.getElementById('opacitySlider');
-    const posX = document.getElementById('posX');
-    const posY = document.getElementById('posY');
-    const fontFamilySelect = document.getElementById('fontFamilySelect');
-    const fontStyleValue = document.getElementById('fontStyleValue');
+  // ── DOM REFS ──
+  const fileInput = document.getElementById('fileInput');
+  const fileDropZone = document.getElementById('fileDropZone');
+  const fileCountBadge = document.getElementById('fileCountBadge');
+  const fileCountBadge2 = document.getElementById('fileCountBadge2');
+  const imageGrid = document.getElementById('imageGrid');
+  const emptyGallery = document.getElementById('emptyGallery');
+  const galleryCount = document.getElementById('galleryCount');
+  const toastText = document.getElementById('toastText');
+  const toastContainer = document.getElementById('toastContainer');
 
-    const applyBtn = document.getElementById('applyWatermarkBtn');
-    const downloadAllBtn = document.getElementById('downloadAllBtn');
-    const clearBtn = document.getElementById('clearBtn');
+  const watermarkText = document.getElementById('watermarkText');
+  const textColor = document.getElementById('textColor');
+  const textColorHex = document.getElementById('textColorHex');
+  const fontSize = document.getElementById('fontSize');
+  const opacitySlider = document.getElementById('opacitySlider');
+  const opacityValue = document.getElementById('opacityValue');
+  const posX = document.getElementById('posX');
+  const posY = document.getElementById('posY');
+  const posPad = document.getElementById('posPad');
+  const posDot = document.getElementById('posDot');
+  const fontFamilySelect = document.getElementById('fontFamilySelect');
+  const fontStyleValue = document.getElementById('fontStyleValue');
 
-    const styleNormal = document.getElementById('styleNormal');
-    const styleBold = document.getElementById('styleBold');
-    const styleItalic = document.getElementById('styleItalic');
+  const applyBtn = document.getElementById('applyWatermarkBtn');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+  const clearBtn = document.getElementById('clearBtn');
 
-    const previewCanvas = document.getElementById('previewCanvas');
-    const previewPlaceholder = document.getElementById('previewPlaceholder');
-    const previewBadge = document.getElementById('previewBadge');
-    const previewStatus = document.getElementById('previewStatus');
-    const ctx = previewCanvas.getContext('2d');
+  const styleNormal = document.getElementById('styleNormal');
+  const styleBold = document.getElementById('styleBold');
+  const styleItalic = document.getElementById('styleItalic');
 
-    // ---------- helpers ----------
-    function updateFileBadge() {
-      fileCountBadge.textContent = `${originalFiles.length} / ${MAX_IMAGES}`;
+  const previewCanvas = document.getElementById('previewCanvas');
+  const previewPlaceholder = document.getElementById('previewPlaceholder');
+  const previewBadge = document.getElementById('previewBadge');
+  const previewStatus = document.getElementById('previewStatus');
+  const previewPanel = document.getElementById('previewPanel');
+  const previewToggleBtn = document.getElementById('previewToggleBtn');
+  const ctx = previewCanvas.getContext('2d');
+
+  const statusDot = document.getElementById('statusDot');
+
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const closeLightbox = document.getElementById('closeLightbox');
+
+  // ── RIPPLE EFFECT ──
+  function attachRipple(el){
+    el.addEventListener('click', function(e){
+      const rect = el.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      const size = Math.max(rect.width, rect.height) * 1.4;
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+      el.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  }
+  document.querySelectorAll('.btn, .preview-toggle-btn').forEach(attachRipple);
+
+  // ── HELPERS ──
+  function updateFileBadge(){
+    const c = originalFiles.length;
+    fileCountBadge.textContent = `${c} / ${MAX_IMAGES}`;
+    fileCountBadge2.textContent = `${c} / ${MAX_IMAGES}`;
+  }
+
+  function updateGalleryCount(){
+    galleryCount.textContent = originalFiles.length;
+    emptyGallery.style.display = originalFiles.length === 0 ? 'flex' : 'none';
+  }
+
+  function showToast(msg, isError){
+    toastText.textContent = msg;
+    toastContainer.classList.toggle('error', !!isError);
+    toastContainer.classList.remove('bump');
+    void toastContainer.offsetWidth;
+    toastContainer.classList.add('bump');
+    if (isError){
+      clearTimeout(toastContainer._timer);
+      toastContainer._timer = setTimeout(() => toastContainer.classList.remove('error'), 4000);
     }
-    function updateGalleryCount() {
-      galleryCount.textContent = originalFiles.length;
-      if (originalFiles.length === 0) emptyGallery.style.display = 'flex';
-      else emptyGallery.style.display = 'none';
-    }
-    function showToast(msg, isError = false) {
-      toastText.textContent = msg;
-      const container = document.getElementById('toastContainer');
-      container.style.borderLeftColor = isError ? '#e35f5f' : '#5d7cff';
-      container.style.background = isError ? '#2a1f2f' : '#171f3d';
-    }
+  }
 
-    function renderGallery() {
-      document.querySelectorAll('.image-card').forEach(el => el.remove());
-      if (originalFiles.length === 0) { emptyGallery.style.display = 'flex'; updateGalleryCount(); return; }
-      emptyGallery.style.display = 'none';
-      originalFiles.slice(0, MAX_IMAGES).forEach((file, idx) => {
-        const card = document.createElement('div');
-        card.className = 'image-card';
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        img.alt = file.name;
-        const badge = document.createElement('div');
-        badge.className = 'index-badge';
-        badge.textContent = idx+1;
-        card.appendChild(img);
-        card.appendChild(badge);
-        imageGrid.appendChild(card);
-      });
-      updateGalleryCount();
-    }
-
-    // ---------- DRAW PREVIEW (FIXED) ----------
-    function drawPreview() {
-      const text = watermarkText.value.trim() || '©';
-      const color = textColor.value;
-      const size = parseInt(fontSize.value, 10) || 52;
-      const opacity = parseFloat(opacitySlider.value) || 0.85;
-      const xPercent = parseFloat(posX.value) || 50;
-      const yPercent = parseFloat(posY.value) || 50;
-      const fontFamily = fontFamilySelect.value || 'Inter, sans-serif';
-      let fontWeight = 'normal', fontStyle = 'normal';
-      const styleVal = fontStyleValue.value;
-      if (styleVal === 'bold') fontWeight = 'bold';
-      else if (styleVal === 'italic') fontStyle = 'italic';
-      else if (styleVal === 'bold italic') { fontWeight = 'bold'; fontStyle = 'italic'; }
-
-      const canvas = previewCanvas;
-      const w = canvas.width, h = canvas.height;
-
-      // Clear canvas first
-      ctx.clearRect(0, 0, w, h);
-
-      // If we have a preview image from uploads, use it
-      if (previewImageData) {
-        const img = new Image();
-        img.onload = function() {
-          // Draw the image to fill canvas maintaining aspect ratio
-          const imgAspect = img.width / img.height;
-          const canvasAspect = w / h;
-          let drawW, drawH, offsetX = 0, offsetY = 0;
-          
-          if (imgAspect > canvasAspect) {
-            drawW = w;
-            drawH = w / imgAspect;
-            offsetY = (h - drawH) / 2;
-          } else {
-            drawH = h;
-            drawW = h * imgAspect;
-            offsetX = (w - drawW) / 2;
-          }
-          
-          ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
-          drawWatermark(ctx, w, h, text, color, size, fontFamily, fontWeight, fontStyle, opacity, xPercent, yPercent);
-          previewPlaceholder.classList.add('hidden');
-        };
-        img.onerror = function() {
-          drawDemoBackground(ctx, w, h);
-          drawWatermark(ctx, w, h, text, color, size, fontFamily, fontWeight, fontStyle, opacity, xPercent, yPercent);
-          previewPlaceholder.classList.add('hidden');
-        };
-        img.src = previewImageData;
-      } else {
-        drawDemoBackground(ctx, w, h);
-        drawWatermark(ctx, w, h, text, color, size, fontFamily, fontWeight, fontStyle, opacity, xPercent, yPercent);
-        previewPlaceholder.classList.add('hidden');
-        previewBadge.textContent = 'demo';
-      }
-    }
-
-    function drawDemoBackground(ctx, w, h) {
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#1a2444');
-      grad.addColorStop(0.5, '#2a3a6a');
-      grad.addColorStop(1, '#1a2444');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-      
-      ctx.fillStyle = 'rgba(255,255,255,0.05)';
-      ctx.font = '60px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('🖼️', w/2, h/2 - 20);
-      ctx.fillStyle = 'rgba(255,255,255,0.06)';
-      ctx.font = '18px sans-serif';
-      ctx.fillText('PREVIEW IMAGE', w/2, h/2 + 50);
-    }
-
-    function drawWatermark(ctx, w, h, text, color, size, fontFamily, fontWeight, fontStyle, opacity, xPercent, yPercent) {
-      ctx.save();
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      let fontString = '';
-      if (fontWeight === 'bold') fontString += 'bold ';
-      if (fontStyle === 'italic') fontString += 'italic ';
-      fontString += `${size}px ${fontFamily}`;
-      ctx.font = fontString;
-      ctx.globalAlpha = Math.min(1, Math.max(0, opacity));
-      ctx.fillStyle = color;
-      ctx.shadowColor = 'rgba(0,0,0,0.8)';
-      ctx.shadowBlur = 20;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 3;
-
-      const x = (xPercent / 100) * w;
-      const y = (yPercent / 100) * h;
-      ctx.fillText(text, x, y);
-      ctx.restore();
-    }
-
-    // ---------- load preview from first uploaded image ----------
-    function updatePreviewFromUploads() {
-      if (originalFiles.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          previewImageData = e.target.result;
-          previewBadge.textContent = 'from upload';
-          previewStatus.textContent = 'live ✓';
-          drawPreview();
-        };
-        reader.readAsDataURL(originalFiles[0]);
-      } else {
-        previewImageData = null;
-        previewBadge.textContent = 'demo';
-        previewStatus.textContent = 'real-time';
-        drawPreview();
-      }
-    }
-
-    // ---------- core watermark ----------
-    function applyWatermarkToFile(file, text, color, fontSizePx, fontFamily, fontWeight, fontStyle, opacity, xPercent, yPercent) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = new Image();
-          img.onload = function() {
-            const width = img.width, height = img.height;
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            let fontString = '';
-            if (fontWeight === 'bold') fontString += 'bold ';
-            if (fontStyle === 'italic') fontString += 'italic ';
-            fontString += `${fontSizePx}px ${fontFamily}`;
-            ctx.font = fontString;
-            ctx.globalAlpha = Math.min(1, Math.max(0, opacity));
-            ctx.fillStyle = color;
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 14;
-            ctx.shadowOffsetX = 2;
-            ctx.shadowOffsetY = 2;
-
-            const x = (xPercent / 100) * width;
-            const y = (yPercent / 100) * height;
-            ctx.fillText(text, x, y);
-            ctx.shadowColor = 'transparent';
-            ctx.globalAlpha = 1.0;
-
-            const mimeType = file.type || 'image/png';
-            canvas.toBlob(function(blob) {
-              if (!blob) reject(new Error('Canvas toBlob failed'));
-              else resolve({ blob, filename: file.name, originalSize: file.size, newSize: blob.size });
-            }, mimeType, 1.0);
-          };
-          img.onerror = () => reject(new Error('Failed to load image'));
-          img.src = e.target.result;
-        };
-        reader.onerror = () => reject(new Error('FileReader error'));
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // ---------- process all ----------
-    async function processAllImages() {
-      if (originalFiles.length === 0) { showToast('No images to watermark', true); return; }
-
-      const text = watermarkText.value.trim() || '©';
-      const color = textColor.value;
-      const size = parseInt(fontSize.value, 10) || 52;
-      const opacity = parseFloat(opacitySlider.value) || 0.85;
-      const x = parseFloat(posX.value) || 50;
-      const y = parseFloat(posY.value) || 50;
-      const fontFamily = fontFamilySelect.value || 'Inter, sans-serif';
-      let fontWeight = 'normal', fontStyle = 'normal';
-      const styleVal = fontStyleValue.value;
-      if (styleVal === 'bold') fontWeight = 'bold';
-      else if (styleVal === 'italic') fontStyle = 'italic';
-      else if (styleVal === 'bold italic') { fontWeight = 'bold'; fontStyle = 'italic'; }
-
-      applyBtn.disabled = true;
-      applyBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
-      processedBlobs = [];
-      processedURLs.forEach(u => URL.revokeObjectURL(u));
-      processedURLs = [];
-
-      try {
-        for (let i = 0; i < originalFiles.length; i++) {
-          const result = await applyWatermarkToFile(
-            originalFiles[i], text, color, size, fontFamily, fontWeight, fontStyle, opacity, x, y
-          );
-          processedBlobs.push(result);
-          showToast(`Watermarked ${i+1}/${originalFiles.length}`);
-        }
-        showToast(`✅ ${processedBlobs.length} images watermarked`);
-        processedBlobs.forEach(item => {
-          processedURLs.push(URL.createObjectURL(item.blob));
-        });
-      } catch (err) {
-        showToast(`Error: ${err.message}`, true);
-      } finally {
-        applyBtn.disabled = false;
-        applyBtn.innerHTML = '<i class="fas fa-stamp"></i> Watermark';
-      }
-    }
-
-    // ---------- download ----------
-    function downloadAll() {
-      if (processedBlobs.length === 0) { showToast('Watermark first', true); return; }
-      if (processedBlobs.length === 1) {
-        const item = processedBlobs[0];
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(item.blob);
-        a.download = `wm_${item.filename}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        showToast('Downloaded 1 image');
-        return;
-      }
-      let idx = 0;
-      function next() {
-        if (idx >= processedBlobs.length) { showToast(`Downloaded ${processedBlobs.length} images`); return; }
-        const item = processedBlobs[idx];
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(item.blob);
-        a.download = `wm_${item.filename}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        idx++;
-        setTimeout(next, 250);
-      }
-      next();
-    }
-
-    // ---------- clear ----------
-    function clearAll() {
-      originalFiles = [];
-      processedBlobs = [];
-      processedURLs.forEach(u => URL.revokeObjectURL(u));
-      processedURLs = [];
-      document.querySelectorAll('.image-card').forEach(el => el.remove());
+  function renderGallery(){
+    document.querySelectorAll('.thumb').forEach(el => el.remove());
+    if (originalFiles.length === 0){
       emptyGallery.style.display = 'flex';
       updateGalleryCount();
-      updateFileBadge();
-      fileInput.value = '';
+      return;
+    }
+    emptyGallery.style.display = 'none';
+    originalFiles.slice(0, MAX_IMAGES).forEach((file, idx) => {
+      const div = document.createElement('div');
+      div.className = 'thumb';
+      div.style.animationDelay = (idx * 0.03) + 's';
+      const url = URL.createObjectURL(file);
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = file.name;
+      img.loading = 'lazy';
+      const badge = document.createElement('span');
+      badge.className = 'idx';
+      badge.textContent = idx + 1;
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        originalFiles.splice(idx, 1);
+        updateFileBadge();
+        renderGallery();
+        updatePreviewFromUploads();
+        showToast('Image removed');
+      });
+      div.addEventListener('click', () => openLightbox(url));
+      div.appendChild(img);
+      div.appendChild(badge);
+      div.appendChild(removeBtn);
+      imageGrid.appendChild(div);
+    });
+    updateGalleryCount();
+  }
+
+  function openLightbox(url){
+    lightboxImg.src = url;
+    lightbox.classList.add('open');
+  }
+  function closeLightboxFn(){
+    lightbox.classList.remove('open');
+  }
+  closeLightbox.addEventListener('click', closeLightboxFn);
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightboxFn(); });
+
+  // ── DRAW PREVIEW ──
+  function drawPreview(){
+    const text = watermarkText.value.trim() || '©';
+    const color = textColor.value;
+    const size = parseInt(fontSize.value, 10) || 45;
+    const opacity = parseFloat(opacitySlider.value) || 0.45;
+    const xPercent = parseFloat(posX.value) || 50;
+    const yPercent = parseFloat(posY.value) || 50;
+    const fontFamily = fontFamilySelect.value || 'Inter, sans-serif';
+    let fontWeight = 'normal', fontStyle = 'normal';
+    const sv = fontStyleValue.value;
+    if (sv === 'bold') fontWeight = 'bold';
+    else if (sv === 'italic') fontStyle = 'italic';
+    else if (sv === 'bold italic'){ fontWeight = 'bold'; fontStyle = 'italic'; }
+
+    const canvas = previewCanvas;
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0,0,w,h);
+
+    if (previewImageData){
+      const img = new Image();
+      img.onload = function(){
+        const ia = img.width / img.height, ca = w / h;
+        let dw, dh, ox=0, oy=0;
+        if (ia > ca){ dw=w; dh=w/ia; oy=(h-dh)/2; } else { dh=h; dw=h*ia; ox=(w-dw)/2; }
+        ctx.drawImage(img, ox, oy, dw, dh);
+        drawWatermark(ctx,w,h,text,color,size,fontFamily,fontWeight,fontStyle,opacity,xPercent,yPercent);
+        previewPlaceholder.classList.add('hidden');
+      };
+      img.onerror = function(){
+        drawDemo(ctx,w,h);
+        drawWatermark(ctx,w,h,text,color,size,fontFamily,fontWeight,fontStyle,opacity,xPercent,yPercent);
+        previewPlaceholder.classList.add('hidden');
+      };
+      img.src = previewImageData;
+    } else {
+      drawDemo(ctx,w,h);
+      drawWatermark(ctx,w,h,text,color,size,fontFamily,fontWeight,fontStyle,opacity,xPercent,yPercent);
+      previewPlaceholder.classList.add('hidden');
+      previewBadge.textContent = 'demo';
+    }
+  }
+
+  function drawDemo(ctx,w,h){
+    const g = ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0,'#1a2444'); g.addColorStop(0.5,'#2a3a6a'); g.addColorStop(1,'#1a2444');
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.font = '48px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🖼️', w/2, h/2 - 16);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)'; ctx.font = '16px sans-serif';
+    ctx.fillText('PREVIEW', w/2, h/2 + 44);
+  }
+
+  function drawWatermark(ctx,w,h,text,color,size,fontFamily,fontWeight,fontStyle,opacity,xPercent,yPercent){
+    ctx.save();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    let fs='';
+    if (fontWeight==='bold') fs+='bold ';
+    if (fontStyle==='italic') fs+='italic ';
+    fs += `${size}px ${fontFamily}`;
+    ctx.font = fs;
+    ctx.globalAlpha = Math.min(1, Math.max(0, opacity));
+    ctx.fillStyle = color;
+    ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur=20; ctx.shadowOffsetX=3; ctx.shadowOffsetY=3;
+    const x = (xPercent/100)*w, y = (yPercent/100)*h;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  function updatePreviewFromUploads(){
+    if (originalFiles.length > 0){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        previewImageData = e.target.result;
+        previewBadge.textContent = 'from upload';
+        previewStatus.textContent = 'from upload ✓';
+        if (previewVisible) drawPreview();
+      };
+      reader.readAsDataURL(originalFiles[0]);
+    } else {
       previewImageData = null;
       previewBadge.textContent = 'demo';
-      previewStatus.textContent = 'real-time';
-      showToast('Cleared all');
+      previewStatus.textContent = 'tap to see';
+      if (previewVisible) drawPreview();
+    }
+  }
+
+  function togglePreview(){
+    previewVisible = !previewVisible;
+    previewPanel.classList.toggle('open', previewVisible);
+    previewToggleBtn.classList.toggle('active', previewVisible);
+    previewToggleBtn.querySelector('span').textContent = previewVisible ? 'Hide Preview' : 'Show Preview';
+    if (previewVisible){
+      previewStatus.textContent = previewImageData ? 'from upload ✓' : 'demo';
       drawPreview();
+    } else {
+      previewStatus.textContent = 'tap to see';
     }
+  }
 
-    // ---------- file handling ----------
-    function handleFiles(files) {
-      const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
-      if (!valid.length) { showToast('No valid images', true); return; }
-      const available = MAX_IMAGES - originalFiles.length;
-      if (available <= 0) { showToast(`Max ${MAX_IMAGES} images`, true); return; }
-      const toAdd = valid.slice(0, available);
-      originalFiles = originalFiles.concat(toAdd);
-      updateFileBadge();
-      renderGallery();
-      updatePreviewFromUploads();
-      showToast(`Added ${toAdd.length} · total ${originalFiles.length}`);
-      fileInput.value = '';
-    }
-
-    // ---------- event listeners ----------
-    fileDropZone.addEventListener('click', () => fileInput.click());
-    fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.style.borderColor = '#5d7cff'; });
-    fileDropZone.addEventListener('dragleave', () => { fileDropZone.style.borderColor = 'rgba(255,255,255,0.06)'; });
-    fileDropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      fileDropZone.style.borderColor = 'rgba(255,255,255,0.06)';
-      if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  function applyWatermarkToFile(file,text,color,sizePx,fontFamily,fontWeight,fontStyle,opacity,xP,yP){
+    return new Promise((resolve,reject) => {
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          const w = img.width, h = img.height;
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const c = canvas.getContext('2d');
+          c.drawImage(img,0,0,w,h);
+          c.textAlign='center'; c.textBaseline='middle';
+          let fs='';
+          if (fontWeight==='bold') fs+='bold ';
+          if (fontStyle==='italic') fs+='italic ';
+          fs += `${sizePx}px ${fontFamily}`;
+          c.font = fs;
+          c.globalAlpha = Math.min(1, Math.max(0, opacity));
+          c.fillStyle = color;
+          c.shadowColor = 'rgba(0,0,0,0.5)'; c.shadowBlur=14; c.shadowOffsetX=2; c.shadowOffsetY=2;
+          const x = (xP/100)*w, y = (yP/100)*h;
+          c.fillText(text, x, y);
+          c.shadowColor = 'transparent'; c.globalAlpha = 1.0;
+          const mime = file.type || 'image/png';
+          canvas.toBlob(function(blob){
+            if (!blob) reject(new Error('toBlob failed'));
+            else resolve({ blob, filename: file.name });
+          }, mime, 1.0);
+        };
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('FileReader error'));
+      reader.readAsDataURL(file);
     });
-    fileInput.addEventListener('change', (e) => { if (e.target.files) handleFiles(e.target.files); });
+  }
 
-    textColor.addEventListener('input', () => { textColorHex.value = textColor.value; drawPreview(); });
-    textColorHex.addEventListener('input', () => { textColor.value = textColorHex.value; drawPreview(); });
-
-    watermarkText.addEventListener('input', drawPreview);
-    fontSize.addEventListener('input', drawPreview);
-    opacitySlider.addEventListener('input', drawPreview);
-    posX.addEventListener('input', drawPreview);
-    posY.addEventListener('input', drawPreview);
-    fontFamilySelect.addEventListener('change', drawPreview);
-
-    function setStyle(s) {
-      fontStyleValue.value = s;
-      [styleNormal, styleBold, styleItalic].forEach(b => b.style.background = '#20294a');
-      if (s === 'normal') styleNormal.style.background = '#3a4670';
-      else if (s === 'bold') styleBold.style.background = '#3a4670';
-      else if (s === 'italic') styleItalic.style.background = '#3a4670';
-      drawPreview();
+  async function processAllImages(){
+    if (originalFiles.length === 0){
+      showToast('No images to watermark', true);
+      return;
     }
-    styleNormal.addEventListener('click', () => setStyle('normal'));
-    styleBold.addEventListener('click', () => setStyle('bold'));
-    styleItalic.addEventListener('click', () => setStyle('italic'));
-    setStyle('normal');
 
-    applyBtn.addEventListener('click', processAllImages);
-    downloadAllBtn.addEventListener('click', downloadAll);
-    clearBtn.addEventListener('click', clearAll);
+    const text = watermarkText.value.trim() || '©';
+    const color = textColor.value;
+    const size = parseInt(fontSize.value, 10) || 45;
+    const opacity = parseFloat(opacitySlider.value) || 0.45;
+    const x = parseFloat(posX.value) || 50;
+    const y = parseFloat(posY.value) || 50;
+    const fontFamily = fontFamilySelect.value || 'Inter, sans-serif';
+    let fontWeight='normal', fontStyle='normal';
+    const sv = fontStyleValue.value;
+    if (sv==='bold') fontWeight='bold';
+    else if (sv==='italic') fontStyle='italic';
+    else if (sv==='bold italic'){ fontWeight='bold'; fontStyle='italic'; }
 
-    // ---------- init ----------
+    applyBtn.disabled = true;
+    applyBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> <span>Processing</span>';
+    processedBlobs = [];
+    processedURLs.forEach(u => URL.revokeObjectURL(u));
+    processedURLs = [];
+
+    progressWrap.classList.add('show');
+    progressFill.style.width = '0%';
+    progressLabel.textContent = `0 / ${originalFiles.length}`;
+
+    try {
+      for (let i = 0; i < originalFiles.length; i++){
+        const result = await applyWatermarkToFile(originalFiles[i], text, color, size, fontFamily, fontWeight, fontStyle, opacity, x, y);
+        processedBlobs.push(result);
+        const pct = Math.round(((i+1)/originalFiles.length)*100);
+        progressFill.style.width = pct + '%';
+        progressLabel.textContent = `${i+1} / ${originalFiles.length}`;
+        showToast(`Watermarked ${i+1}/${originalFiles.length}`);
+      }
+      showToast(`✅ ${processedBlobs.length} images ready`);
+      processedBlobs.forEach(item => processedURLs.push(URL.createObjectURL(item.blob)));
+      statusDot.style.background = '#2eaa6e';
+    } catch (err){
+      showToast(`Error: ${err.message}`, true);
+    } finally {
+      applyBtn.disabled = false;
+      applyBtn.innerHTML = '<i class="fas fa-stamp"></i> <span>Watermark</span>';
+      setTimeout(() => progressWrap.classList.remove('show'), 900);
+    }
+  }
+
+  function downloadAll(){
+    if (processedBlobs.length === 0){
+      showToast('Watermark first', true);
+      return;
+    }
+    if (processedBlobs.length === 1){
+      const item = processedBlobs[0];
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(item.blob);
+      a.download = `wm_${item.filename}`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('Downloaded 1 image');
+      return;
+    }
+    let idx = 0;
+    function next(){
+      if (idx >= processedBlobs.length){
+        showToast(`Downloaded ${processedBlobs.length} images`);
+        return;
+      }
+      const item = processedBlobs[idx];
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(item.blob);
+      a.download = `wm_${item.filename}`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      idx++;
+      setTimeout(next, 300);
+    }
+    next();
+  }
+
+  function clearAll(){
+    originalFiles = [];
+    processedBlobs = [];
+    processedURLs.forEach(u => URL.revokeObjectURL(u));
+    processedURLs = [];
+    document.querySelectorAll('.thumb').forEach(el => el.remove());
+    emptyGallery.style.display = 'flex';
+    updateGalleryCount();
+    updateFileBadge();
+    fileInput.value = '';
+    previewImageData = null;
+    previewBadge.textContent = 'demo';
+    previewStatus.textContent = 'tap to see';
+    if (previewVisible) drawPreview();
+    showToast('Cleared all');
+    statusDot.style.background = '#2eaa6e';
+  }
+
+  function handleFiles(files){
+    const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (!valid.length){
+      showToast('No valid images', true);
+      return;
+    }
+    const avail = MAX_IMAGES - originalFiles.length;
+    if (avail <= 0){
+      showToast(`Max ${MAX_IMAGES} images`, true);
+      return;
+    }
+    const toAdd = valid.slice(0, avail);
+    originalFiles = originalFiles.concat(toAdd);
     updateFileBadge();
     renderGallery();
-    showToast('Ready · upload images · preview updates live');
-    drawPreview();
-  })();
+    updatePreviewFromUploads();
+    showToast(`+${toAdd.length} · total ${originalFiles.length}`);
+    fileInput.value = '';
+    statusDot.style.background = '#2eaa6e';
+  }
+
+  // ── EVENTS ──
+  fileDropZone.addEventListener('click', () => fileInput.click());
+  fileDropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    fileDropZone.classList.add('drag-over');
+  });
+  fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('drag-over'));
+  fileDropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    fileDropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', (e) => { if (e.target.files) handleFiles(e.target.files); });
+
+  textColor.addEventListener('input', () => {
+    textColorHex.value = textColor.value;
+    if (previewVisible) drawPreview();
+  });
+  textColorHex.addEventListener('input', () => {
+    textColor.value = textColorHex.value;
+    if (previewVisible) drawPreview();
+  });
+
+  watermarkText.addEventListener('input', () => { if (previewVisible) drawPreview(); });
+  fontSize.addEventListener('input', () => { if (previewVisible) drawPreview(); });
+  opacitySlider.addEventListener('input', () => {
+    opacityValue.textContent = Math.round(parseFloat(opacitySlider.value)*100) + '%';
+    if (previewVisible) drawPreview();
+  });
+  posX.addEventListener('input', () => { updatePosDot(); if (previewVisible) drawPreview(); });
+  posY.addEventListener('input', () => { updatePosDot(); if (previewVisible) drawPreview(); });
+  fontFamilySelect.addEventListener('change', () => { if (previewVisible) drawPreview(); });
+
+  function updatePosDot(){
+    const x = Math.min(100, Math.max(0, parseFloat(posX.value) || 0));
+    const y = Math.min(100, Math.max(0, parseFloat(posY.value) || 0));
+    posDot.style.left = x + '%';
+    posDot.style.top = y + '%';
+  }
+
+  function setPosFromPad(e){
+    const rect = posPad.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    let x = ((clientX - rect.left) / rect.width) * 100;
+    let y = ((clientY - rect.top) / rect.height) * 100;
+    x = Math.min(100, Math.max(0, Math.round(x)));
+    y = Math.min(100, Math.max(0, Math.round(y)));
+    posX.value = x; posY.value = y;
+    updatePosDot();
+    if (previewVisible) drawPreview();
+  }
+  let padDragging = false;
+  posPad.addEventListener('mousedown', (e) => { padDragging = true; setPosFromPad(e); });
+  window.addEventListener('mousemove', (e) => { if (padDragging) setPosFromPad(e); });
+  window.addEventListener('mouseup', () => padDragging = false);
+  posPad.addEventListener('touchstart', (e) => { padDragging = true; setPosFromPad(e); }, {passive:true});
+  posPad.addEventListener('touchmove', (e) => { if (padDragging) setPosFromPad(e); }, {passive:true});
+  posPad.addEventListener('touchend', () => padDragging = false);
+
+  function setStyle(s){
+    fontStyleValue.value = s;
+    [styleNormal, styleBold, styleItalic].forEach(b => b.classList.remove('active'));
+    if (s==='normal') styleNormal.classList.add('active');
+    else if (s==='bold') styleBold.classList.add('active');
+    else if (s==='italic') styleItalic.classList.add('active');
+    if (previewVisible) drawPreview();
+  }
+  styleNormal.addEventListener('click', () => setStyle('normal'));
+  styleBold.addEventListener('click', () => setStyle('bold'));
+  styleItalic.addEventListener('click', () => setStyle('italic'));
+
+  previewToggleBtn.addEventListener('click', togglePreview);
+  applyBtn.addEventListener('click', processAllImages);
+  downloadAllBtn.addEventListener('click', downloadAll);
+  clearBtn.addEventListener('click', clearAll);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightboxFn();
+  });
+
+  // ── INIT (defaults preserved) ──
+  updateFileBadge();
+  renderGallery();
+  showToast('Ready · upload images to start');
+  updatePosDot();
+  opacityValue.textContent = Math.round(parseFloat(opacitySlider.value)*100) + '%';
+  drawPreview();
+  previewPlaceholder.classList.remove('hidden');
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (previewVisible) drawPreview(); }, 200);
+  });
+
+  console.log('🚀 Watermark · Pro advanced UI ready');
+})();
 </script>
+
 </body>
 </html>
