@@ -947,7 +947,7 @@
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
-                <span class="file-count" id="fileCountBadge">0 / 50</span>
+                <span class="file-count" id="fileCountBadge">0 / 100</span>
                 <span class="status-dot" id="statusDot"></span>
             </div>
         </header>
@@ -961,8 +961,8 @@
                     <div class="upload-zone" id="fileDropZone">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <p>Tap or drag images here</p>
-                        <div class="hint">JPEG, PNG, WebP · up to 50</div>
-                        <div class="badge" id="fileCountBadge2">0 / 50</div>
+                        <div class="hint">JPEG, PNG, WebP · up to 100</div>
+                        <div class="badge" id="fileCountBadge2">0 / 100</div>
                         <input type="file" id="fileInput" multiple accept="image/*">
                     </div>
                 </div>
@@ -1103,7 +1103,8 @@
             let originalFiles = [];
             let processedBlobs = [];
             let processedURLs = [];
-            const MAX_IMAGES = 50;
+            // ── UPDATED LIMIT TO 100 ──
+            const MAX_IMAGES = 100;
 
             // ── DOM ──
             const fileInput = document.getElementById('fileInput');
@@ -1246,7 +1247,7 @@
             lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightboxFn(); });
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightboxFn(); });
 
-            // ── WATERMARK LOGIC ──
+            // ── WATERMARK LOGIC (Preserves original quality: JPEG quality = 1.0, PNG/WebP lossless) ──
             function applyWatermarkToFile(file, text, color, sizePx, fontFamily, fontWeight, fontStyle, opacity, xP, yP) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -1259,7 +1260,10 @@
                             canvas.width = w;
                             canvas.height = h;
                             const c = canvas.getContext('2d');
+                            // Draw original image
                             c.drawImage(img, 0, 0, w, h);
+                            
+                            // Apply watermark
                             c.textAlign = 'center';
                             c.textBaseline = 'middle';
                             let fs = '';
@@ -1278,6 +1282,8 @@
                             c.fillText(text, x, y);
                             c.shadowColor = 'transparent';
                             c.globalAlpha = 1.0;
+                            
+                            // Export with maximum quality (1.0) to preserve image quality
                             const mime = file.type || 'image/png';
                             canvas.toBlob(function(blob) {
                                 if (!blob) reject(new Error('toBlob failed'));
@@ -1324,6 +1330,7 @@
                 progressLabel.textContent = `0 / ${originalFiles.length}`;
 
                 try {
+                    // Process sequentially to avoid memory overload
                     for (let i = 0; i < originalFiles.length; i++) {
                         const result = await applyWatermarkToFile(originalFiles[i], text, color, size, fontFamily,
                             fontWeight, fontStyle, opacity, x, y);
